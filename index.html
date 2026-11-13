@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#050b16">
+<title>JARVIS — Personal Assistant</title>
+<style>
+:root{--bg:#050b16;--panel:#0b1628;--line:#173553;--cyan:#4de4ff;--blue:#4b8dff;--muted:#8ba4bd;--white:#edf7ff}
+*{box-sizing:border-box} body{margin:0;background:radial-gradient(ellipse at 50% 18%,#102d4c 0,#071323 38%,#030711 78%);color:var(--white);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
+.wrap{max-width:760px;margin:auto;padding:20px 16px 36px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 2px 22px}
+.brand{display:flex;align-items:center;gap:11px}.logo{width:42px;height:42px;border:1px solid #2d779b;border-radius:13px;display:grid;place-items:center;color:var(--cyan);font-size:22px;box-shadow:0 0 22px #1d9fcb33}
+.brand b{letter-spacing:3px;font-size:17px}.brand small{display:block;color:var(--muted);letter-spacing:1.5px;font-size:10px;margin-top:2px}
+.pill{border:1px solid #24425d;border-radius:30px;padding:8px 11px;color:#9dc9df;font-size:11px;letter-spacing:1px}
+.hero{text-align:center;padding:26px 10px 20px}.eyebrow{color:var(--cyan);font-size:11px;letter-spacing:3px}.hero h1{font-size:clamp(32px,8vw,48px);letter-spacing:4px;margin:10px 0 5px;text-shadow:0 0 24px #35caff55}.sub{color:var(--muted);font-size:13px}
+.core{width:218px;height:218px;margin:24px auto 18px;border-radius:50%;display:grid;place-items:center;position:relative;background:radial-gradient(circle,#0d3551 0,#07172a 54%,#07101d 70%);border:1px solid #23618a;box-shadow:0 0 0 9px #0c284433,0 0 45px #00bfff22,inset 0 0 30px #1688c533}
+.core:before,.core:after{content:"";position:absolute;border:1px solid #2d8ab3;border-radius:50%;inset:-10px;opacity:.55}.core:after{inset:-20px;border-style:dashed;opacity:.3}
+.core.listening{animation:pulse 1.3s infinite;box-shadow:0 0 55px #26dfff77}
+@keyframes pulse{50%{transform:scale(1.035);filter:brightness(1.35)}}
+.mic{border:0;border-radius:50%;width:92px;height:92px;background:linear-gradient(145deg,#1b6e9c,#123252);color:#dffaff;font-size:35px;box-shadow:0 0 28px #22c9ff44;cursor:pointer}
+.state{color:var(--cyan);font-size:12px;letter-spacing:2px;margin:7px 0 22px;min-height:18px}
+.panel{background:linear-gradient(145deg,#0c1b2d,#081323);border:1px solid var(--line);border-radius:18px;padding:16px;margin:13px 0;box-shadow:0 12px 35px #0003}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.label{font-size:11px;letter-spacing:2px;color:#83b4d0;text-transform:uppercase}
+select,input{background:#071323;border:1px solid #23445f;color:var(--white);border-radius:11px;padding:11px 12px;font-size:14px;outline:none}
+select{max-width:100%}input{width:100%;margin-top:10px}
+button{cursor:pointer} .btn{border:1px solid #246184;background:#0e2b43;color:#dff8ff;border-radius:11px;padding:11px 14px;font-weight:600}.btn.primary{background:linear-gradient(100deg,#087fa7,#235bd0);border:0}.btn:active{transform:scale(.98)}
+.chat{min-height:78px;color:#d7e8f5;font-size:14px;line-height:1.55;margin-top:12px;white-space:pre-wrap;overflow-wrap:anywhere}.hint{font-size:11px;color:#718ba4;line-height:1.5;margin-top:10px}
+.footer{text-align:center;color:#526d86;font-size:10px;letter-spacing:1px;padding:20px 5px}
+@media(max-width:420px){.wrap{padding:14px 12px}.core{width:190px;height:190px}.mic{width:82px;height:82px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <header class="top">
+  <div class="brand"><div class="logo">✧</div><div><b>J.A.R.V.I.S.</b><small>PERSONAL AI INTERFACE</small></div></div>
+  <div class="pill" id="online">SYSTEM READY</div>
+ </header>
+ <section class="hero">
+  <div class="eyebrow">JUST A RATHER VERY INTELLIGENT SYSTEM</div>
+  <h1>GOOD DAY.</h1>
+  <div class="sub" id="clock">INITIALIZING CLOCK…</div>
+  <div class="core" id="core"><button class="mic" id="mic" aria-label="Start voice input">🎙</button></div>
+  <div class="state" id="state">TAP THE MIC TO SPEAK</div>
+  <div class="sub">Your personal assistant interface</div>
+ </section>
+ <section class="panel">
+  <div class="row"><span class="label">Voice & Language</span>
+   <select id="lang"><option value="en-US">English</option><option value="bn-BD">বাংলা (Bangladesh)</option><option value="bn-IN">বাংলা (India)</option></select>
+  </div>
+  <div class="row" style="margin-top:12px">
+   <button class="btn" id="test">Test voice</button>
+   <button class="btn" id="stop">Stop speaking</button>
+  </div>
+  <div class="hint">The available voice depends on the voices installed on your Android phone. A male Bengali voice may not be available on every device.</div>
+ </section>
+ <section class="panel">
+  <div class="label">Command console</div>
+  <input id="command" placeholder="Type a message or command…" autocomplete="off">
+  <div class="row" style="margin-top:10px">
+   <button class="btn primary" id="send">Send command</button>
+   <button class="btn" id="clear">Clear</button>
+  </div>
+  <div class="chat" id="chat">JARVIS: Hello! I am ready. Try “Hello JARVIS” or “What time is it?”</div>
+  <div class="hint">Prototype notice: this first version has a working interface, browser voice input (where supported), and phone text-to-speech. It is not connected to an online AI model yet, so it cannot answer general questions intelligently.</div>
+ </section>
+ <div class="footer">JARVIS PROTOTYPE 1.0 · BUILT FOR ANDROID</div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+function clock(){const d=new Date();$('clock').textContent=d.toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'})+' · '+d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});}
+clock();setInterval(clock,1000);
+function say(text){if(!('speechSynthesis'in window)){setState('TEXT TO SPEECH NOT SUPPORTED');return;}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=$('lang').value;u.rate=.92;u.pitch=.85;const voices=speechSynthesis.getVoices();const prefix=u.lang.toLowerCase().slice(0,2);const v=voices.find(x=>x.lang.toLowerCase().startsWith(prefix));if(v)u.voice=v;speechSynthesis.speak(u);}
+function setState(s){$('state').textContent=s;}
+function respond(raw){const q=raw.trim();if(!q)return;let answer;
+const t=q.toLowerCase();
+if(t.includes('time')||q.includes('সময়')||q.includes('কটা')) answer='এখন সময় '+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})+'.';
+else if(t.includes('hello')||t.includes('hi')||q.includes('হ্যালো')||q.includes('আসসালামু')) answer='হ্যালো! আমি JARVIS। কীভাবে সাহায্য করতে পারি?';
+else if(t.includes('your name')||q.includes('তোমার নাম')) answer='আমার নাম JARVIS। আমি তোমার ব্যক্তিগত সহকারী ইন্টারফেস।';
+else if(t.includes('how are you')||q.includes('কেমন আছ')) answer='আমি প্রস্তুত আছি। তোমাকে কীভাবে সাহায্য করব?';
+else answer='আমি তোমার কথা পেয়েছি: '+q+'. এই প্রোটোটাইপে এখনো Online AI যুক্ত হয়নি। পরের ধাপে AI সংযোগ যোগ করতে হবে।';
+$('chat').textContent='YOU: '+q+'\n\nJARVIS: '+answer; setState('RESPONSE READY');say(answer);}
+$('send').onclick=()=>{respond($('command').value);$('command').value='';};
+$('command').addEventListener('keydown',e=>{if(e.key==='Enter')$('send').click();});
+$('clear').onclick=()=>{$('chat').textContent='Console cleared.';$('command').value='';};
+$('test').onclick=()=>say($('lang').value.startsWith('bn')?'হ্যালো। আমি জার্ভিস। আমি প্রস্তুত আছি।':'Hello. I am JARVIS. I am ready.');
+$('stop').onclick=()=>{if('speechSynthesis'in window)speechSynthesis.cancel();setState('SPEECH STOPPED');};
+function listen(){
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){setState('VOICE INPUT NOT SUPPORTED — TYPE BELOW');$('chat').textContent='Your browser does not support speech recognition. You can still type commands below.';return;}
+ const r=new SR();r.lang=$('lang').value;r.interimResults=false;r.maxAlternatives=1;
+ $('core').classList.add('listening');setState('LISTENING…');
+ r.onresult=e=>{const text=e.results[0][0].transcript;$('command').value=text;respond(text);};
+ r.onerror=e=>setState('MIC ERROR: '+e.error.toUpperCase());
+ r.onend=()=>{$('core').classList.remove('listening');if($('state').textContent==='LISTENING…')setState('TAP THE MIC TO SPEAK');};
+ try{r.start();}catch(e){setState('VOICE INPUT COULD NOT START');}
+}
+$('mic').onclick=listen;
+if(!('speechSynthesis'in window))$('online').textContent='BASIC MODE';
+</script>
+</body>
+</html>
